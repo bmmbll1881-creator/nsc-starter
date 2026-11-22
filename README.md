@@ -9,7 +9,7 @@ Use Python 3.10 or newer. The reference run used Python 3.13.14 on Windows with 
 ```sh
 git clone https://github.com/bmmbll1881-creator/nsc-starter.git
 cd nsc-starter
-git checkout milestone
+git checkout milestone-revised
 python -m venv .venv
 ```
 
@@ -46,20 +46,14 @@ python report_checks.py
 | --- | --- | --- |
 | Figure 1 | `draw_method_development.py` writes `results/method_development.svg`, a redraw of the method stages. | Five stages, under 1 s. |
 | Table 1 and §2.6 | `compare_with_resnsc.py` writes `resnsc_head_to_head.json`. | ResNSC implementation check within 0.5% of the published 121M and 374M scores, about 55 s. |
-| Tables 2–3 and §3.2 | `fit_depth_weights.py` prints ridge, polynomial, cross-validation and bootstrap results. The three `evaluate.py` commands save rank metrics and all eight budget and top-k combinations. `report_checks.py` records full reversals. | Ridge CV ρ 0.8917–0.9606. On development, historical ρ 0.971161, final ρ 0.970933 and NSC ρ 0.969745. At 10M/k=1, final PPL 37.60 versus NSC 39.54. Full reversal changes 200/200 historical scores and 0/200 NSC scores. Fitting about 48 s, each evaluation under 2 s. |
+| Tables 2–3 and §3.2 | `fit_depth_weights.py` prints ridge, polynomial, cross-validation and bootstrap results. The three `evaluate.py` commands save rank metrics and all eight budget and top-k combinations. `report_checks.py` records full reversals. | Ridge CV ρ 0.8917–0.9606. On development, historical ρ 0.971161, final ρ 0.970933 and NSC ρ 0.969745. At 10M/k=1, final PPL 37.60 versus NSC 39.54. Final-split frozen rho 0.965329. Full reversal changes 200/200 historical scores and 0/200 NSC scores. Fitting about 48 s, each evaluation under 2 s. |
 | Table 4 | `check_external_generalization.py` writes `external_generalization_results.json` for the historical tilt. `validate_final_method.py` writes `validation_final_method.json` for the final method. | Five panels with 200, 200, 183, 98 and 45 architectures. Historical GPT-2/LM1B ρ 0.984889 and final 0.98372. About 25 s and 2 s, respectively. |
-| Tables 5–10 | `compare_with_resnsc.py`, `paper_2610_30823_comparison.py` and `decoupling_experiment.py` write `resnsc_head_to_head.json`, `paper_2610_30823_results.json` and `decoupling_results.json`. `report_checks.py` includes the 200-record GPT-2 ranks, the two development plateaus, measured outcomes by allocation and the LoNAS budget summary. | Combined final GPT-2 ρ 0.967434 and τ_b 0.847538. Historical tilt places Reverse first at both sizes and ranks 0/8 LoNAS pairs correctly. Paper comparison under 2 s, decoupling about 27 s. See the calibration differences below. |
+| Tables 5–10 | `compare_with_resnsc.py`, `paper_2610_30823_comparison.py` and `decoupling_experiment.py` write `resnsc_head_to_head.json`, `paper_2610_30823_results.json` and `decoupling_results.json`. `report_checks.py` includes the 200-record GPT-2 ranks, the two development plateaus, measured outcomes by allocation and the LoNAS budget summary. | Combined final GPT-2 ρ 0.967434 and τ_b 0.847538. Historical tilt places Reverse first at both sizes and ranks 0/8 LoNAS pairs correctly. Paper comparison under 2 s, decoupling about 27 s. Development plateaus: -1.59 to -1.54 and -0.74 to -0.68. |
 | Tables 11–12 and §3.7 | `report_checks.py` writes `results/report_checks.json`. `validate_final_method.py` checks reversals and LoNAS. | Forward-minus-reverse final scores +14,502.843 and +59,698.519. Final LoNAS 8/8 and ρ 0.973. Under 2 s each. |
 | Tables 5, 13–14 | `hat_experiment.py` prints per-task scores. `flexibert_experiment.py` writes `flexibert_results.json`. Use those with the final external and paper results above. | 37 HAT configurations, mean ρ 0.938 for all three methods. FlexiBERT Xavier NSC ρ 0.88429 and final 0.89416. Under 2 s each. |
-| Table 15 | `report_checks.py` also writes adjacent-swap, window and random reorder sensitivity. | Adjacent unchanged 66.7% and 73.9%, pooled windows 37.8% and 42.6%. See the random sampling difference below. |
+| Table 15 | `report_checks.py` also writes adjacent-swap, window and random reorder sensitivity. | Adjacent unchanged 66.7% and 73.9%, pooled windows 37.8% and 42.6%. Seeded random unchanged 5.0% and 1.67%, with median relative changes 0.238 and 0.236. |
 
-### Report references and reproduction limits
-
-- Published GPT-2, FlexiBERT and AutoFormer ResNSC benchmark values in Tables 5 and 14 come from arXiv:2610.30823. The local implementation check covers the controlled allocation and LoNAS configurations. Local GPT-2 evaluation uses the course labels and its own tie and split conventions.
-- The frozen scorer gives combined ρ 0.967434, consistent with Tables 5 and 14. The conclusion gives 0.9675. The isolated course final split run gives ρ 0.965329, while the conclusion gives 0.9658. The three intermediate negative GPT-2 sweep values in Table 9 differ when recalculated from the course records.
-- For Table 10, the committed LoNAS-only raw sweep returns β = −2.57, while the PDF gives −2.78 for its LoNAS-only row. The decoupling script evaluates paper-only objectives. The original mixed GPT-2 and paper joint objective and exact cross-group plateau tie-break checkpoints were unavailable. The repository reproduces the label-free regression coefficients and both development plateaus, and uses the PDF's frozen β = −1.59 for final evaluation. The reported 300-resample β interval is also unavailable as an exact rerun.
-- For Table 15, the supplied seed-42 random draws yield unchanged rates of 5.0% and 1.67% and median relative changes of 0.238 and 0.236. The PDF reports 3.3%, 0%, 0.228 and 0.237. The exhaustive adjacent and window rows reproduce the displayed table summaries. The maximum 374M adjacent-swap change is 0.435% of the full reversal, which differs from the PDF's prose bound of 0.4%.
-- Permutation tests use fixed architecture shapes and compare scores. PPL and Avg8 are recorded outcomes of published architectures. The scripts perform calibration, evaluation and simulated selection using these records.
+The commands use recorded outcomes for evaluation and simulated selection. Published ResNSC and AutoFormer reference values are cited in the report.
 
 ## Code and data
 
