@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Evaluate ranking and fixed-budget selection using archived trained outcomes.
 
-Run from any directory: python3 evaluate.py --split development --output dev.json
+Run from the repository root: python evaluate.py --split development --output results/development.json
 Freeze your code and choices before running --split final.
 """
 import argparse
@@ -164,7 +164,8 @@ def main():
     result = evaluate(args.split, args.student.resolve())
     payload = json.dumps(result, indent=2, allow_nan=False) + '\n'
     if args.output:
-        args.output.write_text(payload)
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(payload, encoding='utf-8')
     for name, stats in result['ranking'].items():
         fmt = lambda value: 'undefined' if value is None else f'{value:.6f}'
         print(f"{name:20s} rho={fmt(stats['spearman_rho']):>10s} "
