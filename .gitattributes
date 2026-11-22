@@ -1,0 +1,2 @@
+# Input hashes are defined over the original bytes.
+/data/*.json -text

@@ -1,0 +1,16 @@
+/.venv/
+__pycache__/
+/.ipynb_checkpoints/
+/.env
+/.env.*
+/_data_search/
+/data/hat/
+/data/BERT_benchmark.json
+/results/
+/*_results.json
+/validation_final_method.json
+/resnsc_head_to_head.json
+/dev.json
+/expected_development.json
+/Untitled.ipynb
+/NSC_depth_tilt_report.*
